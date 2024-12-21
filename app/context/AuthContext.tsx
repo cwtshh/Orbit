@@ -1,4 +1,4 @@
-import { createContext, useContext, PropsWithChildren, useState } from 'react';
+import { createContext, useContext, PropsWithChildren, useState, useEffect } from 'react';
 import { User, RegisterBody} from '../types/common';
 import { useRouter } from 'expo-router';
 import { notifyToast } from '../utils/Toast';
@@ -63,7 +63,10 @@ export const SessionProvider = ({ children }: PropsWithChildren<{}>) => {
     };
 
     const logout = async() => {
-        console.log('logout');
+        await SecureStore.deleteItemAsync('token');
+        await SecureStore.deleteItemAsync('user_data');
+        setUser(null);
+        router.push('/');
     };
 
     console.log(API_URL);
@@ -81,6 +84,20 @@ export const SessionProvider = ({ children }: PropsWithChildren<{}>) => {
             notifyToast('error', 'Erro', 'Erro ao registrar usuário.');
         });
     };
+
+    useEffect(() => {
+        const checkUser = async() => {
+            const token = await SecureStore.getItemAsync('token');
+            const user_data = await SecureStore.getItemAsync('user_data');
+            if(token && user_data) {
+                setUser(JSON.parse(user_data));
+                setToken(token);
+                router.push('/(root)/(tabs)/home');
+            }
+        };
+
+        checkUser();
+    }, [])
 
     return (
         <AuthContext.Provider value={{

@@ -2,11 +2,11 @@ import { View, Text, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { useSession } from '@/app/context/AuthContext'
 import { FontAwesome } from '@expo/vector-icons';
-import Blips from './components/blips';
-import Curtidas from './components/curtidas';
+import Blips from '../components/blips';
+import Curtidas from '../components/curtidas';
 
 const profile = () => {
-    const [ selected, setSelected ] = useState('blips');
+    const [ selected, setSelected ] = useState<string>('blips');
     const { user } = useSession();
 
     return (
