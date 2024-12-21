@@ -1,0 +1,1 @@
+export const API_URL = process.env.EXPO_API_BASE_URL;
