@@ -1,18 +1,16 @@
 import { View, Text } from 'react-native'
-import React, { useCallback, useState } from 'react'
-import axios from 'axios'
-import { API_URL } from '@/app/utils/API_URL'
-import { useSession } from '@/app/context/AuthContext'
-import { notifyToast } from '@/app/utils/Toast'
-import { useFocusEffect } from 'expo-router'
-import PostCard from './postcard'
+import React, { useState, useCallback } from 'react'
+import { API_URL } from '@/app/utils/API_URL';
+import axios from 'axios';
+import { notifyToast } from '@/app/utils/Toast';
+import { useFocusEffect } from 'expo-router';
+import PostCard from './postcard';
 
-const Curtidas = () => {
-  const { user } = useSession();
+const Ocurtidas = ({ user_id } : any) => {
   const [ likedPosts, setLikedPosts ] = useState([]);
 
   const get_user_likes = async() => {
-    await axios.get(`${API_URL}/user/likes/${user?.id}`, { withCredentials: true }).then((res) => {
+    await axios.get(`${API_URL}/user/likes/${user_id}`, { withCredentials: true }).then((res) => {
       setLikedPosts(res.data);
     }).catch((err) => {
       notifyToast('error', 'Error', 'An error occurred while trying to fetch liked posts');
@@ -24,7 +22,7 @@ const Curtidas = () => {
   }, []))
 
   return (
-    <View className='p-4'>
+    <View className=''>
       {likedPosts.length > 0 ? (
         likedPosts.map((post, index) => {
           return (
@@ -42,4 +40,4 @@ const Curtidas = () => {
   )
 }
 
-export default Curtidas
+export default Ocurtidas

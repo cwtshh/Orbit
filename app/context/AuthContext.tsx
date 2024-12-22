@@ -3,10 +3,8 @@ import { User, RegisterBody} from '../types/common';
 import { useRouter } from 'expo-router';
 import { notifyToast } from '../utils/Toast';
 import * as SecureStore from 'expo-secure-store';
-
 import axios from 'axios';
-
-const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+import { API_URL } from '../utils/API_URL';
 
 interface AuthContextType {
     user: User | null;

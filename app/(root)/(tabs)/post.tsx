@@ -5,8 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { notifyToast } from '@/app/utils/Toast';
-
-const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+import { API_URL } from '@/app/utils/API_URL';
 
 const post = () => {
   const { user } = useSession();

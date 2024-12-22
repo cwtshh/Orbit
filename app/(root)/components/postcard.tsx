@@ -5,6 +5,7 @@ import { useSession } from '@/app/context/AuthContext';
 import axios from 'axios';
 import { notifyToast } from '@/app/utils/Toast';
 import { useRouter } from 'expo-router';
+import { API_URL } from '@/app/utils/API_URL';
 
 interface Post {
   _id: number;
@@ -23,15 +24,11 @@ interface PostCardProps {
   trigger_reload: () => void | null;
 }
 
-const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
-
 const PostCard = ({ post, trigger_reload }: PostCardProps) => {
     const created_at = new Date(post.createdAt);
     const [ likes, setLikes ] = useState<number>(post.likes);
     const { user } = useSession();
     const router = useRouter();
-
-    // TODO NAO PERMITIR Q O USUARIO CURTA 2 VEZES O MESMO POST
 
     const handlePostLike = async() => {
       await axios.patch(`${API_URL}/user/post/like`, {
@@ -43,13 +40,11 @@ const PostCard = ({ post, trigger_reload }: PostCardProps) => {
       }).catch((err) => {
         notifyToast('error', 'Error', 'An error occurred while trying to like the post');
       })
-    }
+    };
   
     return (
       <Pressable onPress={() => router.push(`/post_detail/${post._id}`)}>
-
         <View className="border p-4 rounded-xl border-gray-50 bg-steel-gray-100">
-
           <View className="flex flex-row gap-4 items-start">
             <View className="bg-steel-gray-800 p-2 rounded-full w-10 h-10 flex items-center justify-center">
               <FontAwesome name="user" size={24} color="white" />

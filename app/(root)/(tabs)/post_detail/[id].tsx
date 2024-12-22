@@ -1,16 +1,17 @@
 import { View, Text, Pressable, ScrollView, TextInput } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FontAwesome } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'
+import { useFocusEffect, useRouter } from 'expo-router'
 import { useSearchParams } from 'expo-router/build/hooks'
 import axios from 'axios'
 import { notifyToast } from '@/app/utils/Toast'
-
-const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+import { API_URL } from '@/app/utils/API_URL'
+import { useSession } from '@/app/context/AuthContext'
+import CommentCard from '../../components/comment_card'
 
 interface Post {
   _id: string,
-  comments: Array<any>,
+  comments: Array<Comment>,
   likes: number,
   content: string,
   user: {
@@ -26,11 +27,26 @@ interface Post {
   createdAt: string,
 }
 
+interface Comment {
+  content: string; 
+  user: {
+      _id: string,
+      username: string,
+      email: string,
+      name: string,
+  };
+  post: string;
+  createdAt: string;
+};
+
+
 const post_details = () => {
+  const { user } = useSession(); 
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const [ post, setPost ] = useState<Post | null>(null);
+  const [ content, setContent ] = useState<string>('');
   const created_at = post?.createdAt ? new Date(post.createdAt) : new Date();
 
   const get_post = async() => {
@@ -41,11 +57,23 @@ const post_details = () => {
     })
   };
 
-  useEffect(() => {
-    get_post();
-  }, []);
+  const handleComment = async() => {
+    await axios.post(`${API_URL}/user/post/comment`, {
+      user_id: user?.id,
+      post_id: id,
+      content: content
+    }, { withCredentials: true }).then(() => {
+      setContent('');
+      get_post();
+      notifyToast('success', 'Success', 'Comment created successfully');
+    }).catch(() => {
+      notifyToast('error', 'Error', 'An error occurred while trying to create the comment');
+    });
+  };
 
-  console.log(post);
+  useFocusEffect(useCallback(() => {
+    get_post();
+  }, [id]));
 
   return (
     <View className='w-full h-full'>
@@ -99,8 +127,8 @@ const post_details = () => {
         </View>
 
         <View className='p-4 flex flex-row items-center gap-4'>
-          <TextInput className='bg-gray-300 rounded-xl w-[80%]' placeholder='Escreva um comentário...' />
-          <Pressable className='bg-steel-gray-800 p-3 rounded-xl'>
+          <TextInput value={content} onChangeText={setContent} className='bg-gray-300 rounded-xl w-[80%]' placeholder='Escreva um comentário...' />
+          <Pressable onPress={handleComment} className='bg-steel-gray-800 p-3 rounded-xl'>
             <Text className='text-white'>Enviar</Text>
           </Pressable>
         </View>
@@ -109,6 +137,11 @@ const post_details = () => {
           <Text className='font-bold text-xl'>Comentários</Text>
         </View>
 
+        {post?.comments.map((comment: Comment, index: number) => {
+          return(
+            <CommentCard key={index} comment={comment} />
+          )
+        })}
         
 
       </ScrollView>

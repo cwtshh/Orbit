@@ -6,8 +6,7 @@ import { useFocusEffect } from 'expo-router';
 import PostCard from '../components/postcard';
 import { FontAwesome } from '@expo/vector-icons';
 import { useSession } from '@/app/context/AuthContext';
-
-const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+import { API_URL } from '@/app/utils/API_URL';
 
 const home = () => {
 
@@ -57,7 +56,7 @@ const home = () => {
       <View className='p-4 flex flex-col gap-4'>
         <Text className='font-bold text-2xl'>Blips Recentes</Text>
 
-        <ScrollView >
+        <ScrollView className='h-[85%]'>
           {posts.length > 0 ? posts.map((post: Post, index: number) => {
             return(
               <View className='mb-4' key={index}>

@@ -1,51 +1,57 @@
-import { View, Text } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useSession } from '@/app/context/AuthContext'
+import { View, Text, ScrollView } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { useSession } from '@/app/context/AuthContext';
 import axios from 'axios';
 import { notifyToast } from '@/app/utils/Toast';
 import PostCard from './postcard';
 import { useFocusEffect } from 'expo-router';
-
-const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+import { API_URL } from '@/app/utils/API_URL';
 
 const Blips = () => {
   const { user } = useSession();
-  const [ posts, setPosts ] = useState([]);
-  const [ isLoading, setIsLoading ] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const get_user_posts = async() => {
-    await axios.get(`${API_URL}/user/posts/user/${user?.id}`).then((res) => {
+  // Função para buscar os posts do usuário
+  const get_user_posts = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/user/posts/user/${user?.id}`);
       setPosts(res.data);
-      setIsLoading(false);
-    }).catch((err) => {
+    } catch (err) {
       notifyToast('error', 'Error', 'An error occurred while trying to fetch posts');
+    } finally {
       setIsLoading(false);
-    });
+    }
   };
 
-  useFocusEffect(useCallback(() => {
-    get_user_posts();
-  }, []));
+  // Recarrega os posts sempre que a tela for focada
+  useFocusEffect(
+    useCallback(() => {
+      get_user_posts();
+    }, [])
+  );
 
   return (
-    <View className='w-full h-full'>
+    <View className='p-4'>
       {isLoading ? (
-        <Text>Carregando...</Text>
-      ): (
-        posts.length > 0 ? (
-          posts.map((post: any, index: number) => {
-            return(
-              <PostCard key={index} post={post} trigger_reload={() => null} />
-            )
-          })
-        ) : (
-          <>
-            <Text className='text-center text-xl font-bold'>Você ainda não tem blips.</Text>
-          </>
-        )
+        <View className="items-center justify-center">
+          <Text className="text-white">Carregando...</Text>
+        </View>
+      ) : posts.length > 0 ? (
+        posts.map((post: any, index: number) => (
+          <View key={index} className="mb-4">
+            <PostCard post={post} trigger_reload={() => null} />
+          </View>
+        ))
+      ) : (
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-center text-white text-xl font-bold">
+            Você ainda não tem blips.
+          </Text>
+        </View>
       )}
     </View>
-  )
-}
+  );
+};
 
-export default Blips
+export default Blips;

@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { useSession } from '@/app/context/AuthContext'
 import { FontAwesome } from '@expo/vector-icons';
@@ -50,7 +50,7 @@ const profile = () => {
             </Pressable>
         </View>
 
-        <View className='p-4'>
+        <ScrollView className=''>
             {selected === 'blips' && (
                 <>
                     <Blips />
@@ -66,7 +66,7 @@ const profile = () => {
                     <Seguindo />
                 </>
             )}
-        </View>
+        </ScrollView>
     </View>
   )
 }

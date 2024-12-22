@@ -5,8 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { useSession } from '@/app/context/AuthContext';
 import { notifyToast } from '@/app/utils/Toast';
-
-const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+import { API_URL } from '@/app/utils/API_URL';
 
 const search = () => {
   const [ query, setQuery ] = useState<string>('');
