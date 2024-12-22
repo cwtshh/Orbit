@@ -23,12 +23,13 @@ const home = () => {
     createdAt: string;
   }
 
+  const { user } = useSession();
   const [posts, setPosts] = useState([]);
   const { logout } = useSession();
 
   const get_posts = async() => {
-    await axios.get(`${API_URL}/user/posts/all`, { withCredentials: true }).then((res) => {
-      setPosts(res.data.posts);
+    await axios.get(`${API_URL}/user/posts/followers/${user?.id}`, { withCredentials: true }).then((res) => {
+      setPosts(res.data);
     }).catch(() => {
       notifyToast('error', 'Erro ao buscar posts', 'Erro ao buscar posts, tente novamente.');
     })

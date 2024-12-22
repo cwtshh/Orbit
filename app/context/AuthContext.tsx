@@ -37,7 +37,6 @@ export const SessionProvider = ({ children }: PropsWithChildren<{}>) => {
     const router = useRouter();
 
     const login = async(username: string, password: string) => {
-        console.log('login');
         if(username === '' || password === '') {
             notifyToast('error', 'Erro', 'Preencha todos os campos.');
             return;
