@@ -6,13 +6,12 @@ import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { notifyToast } from '@/app/utils/Toast';
 
-const API_URL = 'https://5406-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
 
 const post = () => {
   const { user } = useSession();
   const date = new Date();
   const router = useRouter();
-  console.log(API_URL);
   const [ content, setContent ] = useState<string>('');
   
   const handlePost = async() => {
@@ -20,12 +19,11 @@ const post = () => {
       user_id: user?.id,
       content: content
     }, {withCredentials: true}).then(() => {
-      notifyToast('success', 'Postagem realizada com sucesso!', '');
       setContent('');
+      notifyToast('success', 'Postagem realizada com sucesso!', '');
       router.push('/(root)/(tabs)/home');
     }).catch((err) => {
       notifyToast('error', 'Erro ao postar', 'Erro ao postar, tente novamente.');
-      console.log(err);
     })
   }
 

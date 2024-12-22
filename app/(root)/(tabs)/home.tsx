@@ -7,12 +7,12 @@ import PostCard from '../components/postcard';
 import { FontAwesome } from '@expo/vector-icons';
 import { useSession } from '@/app/context/AuthContext';
 
-const API_URL = 'https://5406-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
 
 const home = () => {
 
   interface Post {
-    id: number;
+    _id: number;
     content: string;
     user: {
         id: number;
@@ -27,10 +27,9 @@ const home = () => {
   const { logout } = useSession();
 
   const get_posts = async() => {
-    await axios.get(`${API_URL}/user/posts`, { withCredentials: true }).then((res) => {
+    await axios.get(`${API_URL}/user/posts/all`, { withCredentials: true }).then((res) => {
       setPosts(res.data.posts);
     }).catch(() => {
-      console.log('Erro ao buscar posts');
       notifyToast('error', 'Erro ao buscar posts', 'Erro ao buscar posts, tente novamente.');
     })
   };
@@ -60,8 +59,8 @@ const home = () => {
         <ScrollView >
           {posts.length > 0 ? posts.map((post: Post, index: number) => {
             return(
-              <View className='mb-4'>
-                <PostCard key={index} post={post} />
+              <View className='mb-4' key={index}>
+                <PostCard key={index} post={post} trigger_reload={() => null} />
               </View>
             )
           }) : (

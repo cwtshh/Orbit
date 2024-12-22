@@ -1,27 +1,47 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text, Pressable } from 'react-native'
+import React, { useState } from 'react'
 import { FontAwesome } from '@expo/vector-icons';
 import { useSession } from '@/app/context/AuthContext';
+import axios from 'axios';
+import { notifyToast } from '@/app/utils/Toast';
 
 interface Post {
-    id: number;
-    content: string;
-    user: {
-        id: number;
-        username: string;
-    }
-    likes: number;
-    comments_count: number;
-    createdAt: string;
+  _id: number;
+  content: string;
+  user: {
+      id: number;
+      username: string;
+  }
+  likes: number;
+  comments_count: number;
+  createdAt: string;
 }
 
 interface PostCardProps {
-    post: Post;
+  post: Post;
+  trigger_reload: () => void | null;
 }
 
-const PostCard = ({ post }: PostCardProps) => {
+const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+
+const PostCard = ({ post, trigger_reload }: PostCardProps) => {
     const created_at = new Date(post.createdAt);
+    const [ likes, setLikes ] = useState<number>(post.likes);
     const { user } = useSession();
+
+    // TODO NAO PERMITIR Q O USUARIO CURTA 2 VEZES O MESMO POST
+
+    const handlePostLike = async() => {
+      await axios.patch(`${API_URL}/user/post/like`, {
+        user_id: user?.id,
+        post_id: post._id
+      }).then(() => {
+        setLikes(likes + 1);
+        notifyToast('success', 'Post liked', '');
+      }).catch((err) => {
+        notifyToast('error', 'Error', 'An error occurred while trying to like the post');
+      })
+    }
   
     return (
       <View className="border p-4 rounded-xl border-gray-50 bg-steel-gray-100">
@@ -46,10 +66,10 @@ const PostCard = ({ post }: PostCardProps) => {
         </View>
 
         <View className="flex flex-row gap-4 items-center justify-start mt-4">
-          <View className="flex flex-row items-center">
+          <Pressable onPress={handlePostLike} className="flex flex-row items-center">
             <FontAwesome name="heart" size={18} color="#9688cc" />
-            <Text className="ml-1">{post.likes}</Text>
-          </View>
+            <Text className="ml-1">{likes}</Text>
+          </Pressable>
           <View className="flex flex-row items-center">
             <FontAwesome name="comment" size={18} color="#9688cc" />
             <Text className="ml-1">{post.comments_count}</Text>

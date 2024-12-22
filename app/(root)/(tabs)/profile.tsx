@@ -4,6 +4,7 @@ import { useSession } from '@/app/context/AuthContext'
 import { FontAwesome } from '@expo/vector-icons';
 import Blips from '../components/blips';
 import Curtidas from '../components/curtidas';
+import Seguindo from '../components/seguindo';
 
 const profile = () => {
     const [ selected, setSelected ] = useState<string>('blips');
@@ -43,16 +44,26 @@ const profile = () => {
             <Pressable onPress={() => setSelected('curtidas')} className={`p-2 w-28 flex justify-center items-center border-b-2 ${selected === 'curtidas' ? 'border-steel-gray-800' : 'border-transparent'}`}>
                 <Text className='font-bold'>Curtidas</Text>
             </Pressable>
+
+            <Pressable onPress={() => setSelected('seguindo')} className={`p-2 w-28 flex justify-center items-center border-b-2 ${selected === 'seguindo' ? 'border-steel-gray-800' : 'border-transparent'}`}>
+                <Text className='font-bold'>Seguindo</Text>
+            </Pressable>
         </View>
 
         <View className='p-4'>
-            {selected === 'blips' ? (
+            {selected === 'blips' && (
                 <>
                     <Blips />
                 </>
-            ) : (
+            )}
+            {selected === 'curtidas' && (
                 <>
                     <Curtidas />
+                </>
+            )}
+            {selected === 'seguindo' && (
+                <>
+                    <Seguindo />
                 </>
             )}
         </View>

@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import axios from 'axios';
 
-const API_URL = 'https://5406-2804-14c-65d6-419e-00-113a.ngrok-free.app';
+const API_URL = 'https://8f6f-2804-14c-65d6-419e-00-113a.ngrok-free.app';
 
 interface AuthContextType {
     user: User | null;
@@ -69,14 +69,11 @@ export const SessionProvider = ({ children }: PropsWithChildren<{}>) => {
         router.push('/');
     };
 
-    console.log(API_URL);
-
     const register = async(user_data: RegisterBody) => {
         if(user_data.email === '' || user_data.name === '' || user_data.password === '' || user_data.username === '') {
             notifyToast('error', 'Erro', 'Preencha todos os campos.');
             return;
         }
-        
         await axios.post(`${API_URL}/user/register`, user_data).then(() => {
             notifyToast('success', 'Sucesso', 'Usuário registrado com sucesso.');
             router.push('/');
