@@ -120,13 +120,17 @@ const other_profile = () => {
       </View>
 
       <ScrollView className='p-4' >
-        {selected === 'blips' && ohterUser?.posts.map((post) => (
-          <OBlips user_id={id} />
-        ))}
+        {selected === 'blips' && (
+          <>
+            <OBlips user_id={id} />
+          </>
+        )}
 
-        {selected === 'curtidas' && ohterUser?.likes.map((like) => (
-          <Ocurtidas user_id={id} />
-        ))}
+        {selected === 'curtidas' && (
+          <>
+            <Ocurtidas user_id={id} />
+          </>
+        )}
       </ScrollView>
     </View>
 

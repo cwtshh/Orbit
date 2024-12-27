@@ -45,7 +45,7 @@ const Blips = () => {
         ))
       ) : (
         <View className="flex-1 items-center justify-center">
-          <Text className="text-center text-white text-xl font-bold">
+          <Text className="text-center text-xl font-bold">
             Você ainda não tem blips.
           </Text>
         </View>

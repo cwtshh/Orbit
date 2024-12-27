@@ -30,7 +30,7 @@ const OBlips = ({ user_id } : any) => {
                 )
              })   
             ): (
-                <Text>Este usuário não tem posts</Text>
+                <Text className='text-cente text-xl font-bold'>Este usuário não tem posts</Text>
             )}
         </View>
     )

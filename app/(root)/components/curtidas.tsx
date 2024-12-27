@@ -34,7 +34,7 @@ const Curtidas = () => {
           )
         })
       ) : (
-        <Text className='text-center text-white text-xl font-bold'>
+        <Text className='text-center text-xl font-bold'>
           Você ainda não curtiu nenhum blip.
         </Text>
       )}

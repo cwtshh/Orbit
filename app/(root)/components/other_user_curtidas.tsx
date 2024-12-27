@@ -32,8 +32,8 @@ const Ocurtidas = ({ user_id } : any) => {
           )
         })
       ) : (
-        <Text className='text-center text-white text-xl font-bold'>
-          Você ainda não curtiu nenhum blip.
+        <Text className='text-cente text-xl font-bold'>
+          Este usuário ainda não curtiu nenhum blip.
         </Text>
       )}
     </View>
