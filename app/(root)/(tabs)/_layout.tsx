@@ -38,6 +38,14 @@ export default function TabLayout() {
         />
 
         <Tabs.Screen 
+          name='chats'
+          options={{
+            title: 'chats',
+            tabBarIcon: ({ color }) => <FontAwesome size={28} name="comments" color={"#9688cc"} />,
+          }}
+        />
+
+        <Tabs.Screen 
           name='other_profile/[id]'
           options={{
             href: null
@@ -50,6 +58,14 @@ export default function TabLayout() {
             href: null
           }} 
         />
+
+        <Tabs.Screen 
+          name='user_chat/[id]'
+          options={{
+            href: null
+          }}
+        />
+
       </Tabs>
     </>
   );
