@@ -1,5 +1,5 @@
 import { View, Text, Pressable, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'expo-router/build/hooks'
 import { FontAwesome } from '@expo/vector-icons'
 import axios from 'axios'
@@ -8,6 +8,7 @@ import { useSession } from '@/app/context/AuthContext'
 import { API_URL } from '@/app/utils/API_URL'
 import Ocurtidas from '../../components/other_user_curtidas'
 import OBlips from '../../components/ohter_user_posts'
+import { useFocusEffect } from 'expo-router'
 
 // TODO - COLOCAR API URL NA ENV PORRA
 interface OtherUser {
@@ -41,16 +42,18 @@ const other_profile = () => {
         await axios.post(`${API_URL}/user/chat/create`, {
           users: [user?.id, ohterUser?._id]
         }).then((res) => {
-          console.log(res.data);
-          // notifyToast('success', 'Chat criado', 'Chat criado com sucesso');
-          router.push(`/user_chat/${res.data.chat._id}` as any);
+          console.log("new chat id " + res.data.chat._id);
+          notifyToast('success', 'Chat criado', 'Chat criado com sucesso');
+          router.push(`/user_chat/${res.data.chat._id}`);
         }).catch((err) => {
           notifyToast('error', 'Erro ao criar chat', 'Erro ao criar chat, tente novamente.');
         })
       }
       if(chat.data.code === 'found') {
         // notifyToast('info', 'Chat já existe', 'Chat já existe, redirecionando...');
-        router.push(`/user_chat/${chat.data.chat._id}` as any);
+        console.log("chat id " + chat.data.chat._id);
+        console.log("EXISTE")
+        router.push(`/user_chat/${chat.data.chat._id}`);
       }
     } catch (error: any) {
       notifyToast('error', 'Erro ao criar chat', 'Erro ao criar chat, tente novamente.');
@@ -103,10 +106,9 @@ const other_profile = () => {
 
   }
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     get_user();
-  }, []);
-  
+  }, [id]))
 
   return (
     <View className='w-full h-full'>

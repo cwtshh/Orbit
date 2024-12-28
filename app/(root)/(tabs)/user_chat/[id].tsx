@@ -39,6 +39,7 @@ const user_chat = () => {
         createdAt: new Date(),
     });
     const { user } = useSession();
+    console.log(chat_id);
     const router = useRouter();
     const other_user = chat.users.filter((u) => u._id !== user?.id)[0] || { _id: '', name: '', email: '', username: '' };
     const ws = new WebSocket(API_URL);
@@ -49,27 +50,24 @@ const user_chat = () => {
     const scrollToBottom = () => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
     };
-
     useEffect(() => {
-        // Chama a função de rolar até o final sempre que as mensagens mudarem
         scrollToBottom();
     }, [chat.messages]);
 
     const get_chat = async() => {
+        console.log("recarregando...");
         await axios.get(`${API_URL}/user/chat/${chat_id}`).then((res) => {
             setChat(res.data.chat);
         }).catch((err) => {
-            console.log(err);
+            console.log(err.data);
             notifyToast('error', 'Error', 'Failed to get chat');
             router.back();
         })
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            get_chat();
-        }, [])
-    );
+    useFocusEffect(useCallback(() => {
+        get_chat();
+    }, [chat_id]))
 
     useFocusEffect(
         useCallback(() => {
