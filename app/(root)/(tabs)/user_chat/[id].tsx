@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable } from 'react-native'
+import { View, Text, TextInput, Pressable, ActivityIndicator } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'expo-router/build/hooks'
 import axios from 'axios';
@@ -39,13 +39,14 @@ const user_chat = () => {
         createdAt: new Date(),
     });
     const { user } = useSession();
-    console.log(chat_id);
     const router = useRouter();
     const other_user = chat.users.filter((u) => u._id !== user?.id)[0] || { _id: '', name: '', email: '', username: '' };
     const ws = new WebSocket(API_URL);
     const [ socket, setSocket ] = useState<any>(null);
     const [ message, setMessage ] = useState('');
     const scrollViewRef = useRef<ScrollView>(null);
+
+    const [ loading, setLoading ] = useState(false);
 
     const scrollToBottom = () => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -55,11 +56,11 @@ const user_chat = () => {
     }, [chat.messages]);
 
     const get_chat = async() => {
-        console.log("recarregando...");
+        setLoading(true);
         await axios.get(`${API_URL}/user/chat/${chat_id}`).then((res) => {
             setChat(res.data.chat);
+            setLoading(false);
         }).catch((err) => {
-            console.log(err.data);
             notifyToast('error', 'Error', 'Failed to get chat');
             router.back();
         })
@@ -138,7 +139,6 @@ const user_chat = () => {
                     setMessage('');
                 }
             } catch (error) {
-                console.log(error);
                 notifyToast('error', 'Error', 'Failed to send message');
             }
         }
@@ -156,37 +156,55 @@ const user_chat = () => {
                 <View className='bg-white rounded-full p-2 w-12 h-12 flex items-center justify-center'>
                     <FontAwesome name='user' size={18} color='#725ea4' />
                 </View>
-                <View>
-                    <Text className='text-white text-lg'>{other_user.name}</Text>
-                    <Text className='text-white text-sm'>@{other_user.username}</Text>
-                </View>
+
+                {loading === true ? (
+                    <ActivityIndicator animating={loading} size='large' color='white' />
+                ) : (
+                    <View>
+                        <Text className='text-white text-lg'>{other_user.name}</Text>
+                        <Text className='text-white text-sm'>@{other_user.username}</Text>
+                    </View>
+                )}
+
+                
             </View>
 
+
             {/* ScrollView de mensagens com gap */}
-            <ScrollView
+            { loading ? (
+                <View className='flex-1 flex items-center justify-center w-full h-full'>
+                    <ActivityIndicator animating={loading} size='large' color='#725ea4' />
+                </View>
+            ) : (
+                <ScrollView
                 ref={scrollViewRef}
                 className='flex-1 p-4'
-            >
-                {chat.messages.length > 0 ? (
-                    chat.messages.map((message: Message, index: number) => {
-                        const isSender = message.user === user?.id;
-                        return (
-                            <View
-                                key={index}
-                                className={`flex flex-row ${isSender ? 'justify-end' : ''} mb-4`} // Adicionando gap entre as mensagens
-                            >
-                                {isSender ? (
-                                    <MessageCardSender message={message} />
-                                ) : (
-                                    <MessageCardReciver message={message} />
-                                )}
-                            </View>
-                        );
-                    })
-                ) : (
-                    <Text className='text-center text-gray-400'>Envie uma mensagem!</Text>
-                )}
-            </ScrollView>
+                >
+                    {chat.messages.length > 0 ? (
+                        chat.messages.map((message: Message, index: number) => {
+                            const isSender = message.user === user?.id;
+                            return (
+                                <View
+                                    key={index}
+                                    className={`flex flex-row ${isSender ? 'justify-end' : ''} mb-4`} // Adicionando gap entre as mensagens
+                                >
+                                    {isSender ? (
+                                        <MessageCardSender message={message} />
+                                    ) : (
+                                        <MessageCardReciver message={message} />
+                                    )}
+                                </View>
+                            );
+                        })
+                    ) : (
+                        <View className='flex-1 flex items-center justify-center w-full h-full'>
+                            <Text className='text-center text-gray-400'>Envie uma mensagem!</Text>
+                        </View>
+                    )}
+                </ScrollView>
+            )}
+
+            
 
             {/* Input de mensagem */}
             <View className="border-t border-gray-300 p-4 flex flex-row items-center w-full">
