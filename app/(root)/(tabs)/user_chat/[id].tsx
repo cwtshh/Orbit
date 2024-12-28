@@ -11,6 +11,7 @@ import { io } from 'socket.io-client';
 import MessageCardSender from '../../components/message_card';
 import MessageCardReciver from '../../components/message_card_reciver';
 import { useFocusEffect } from 'expo-router';
+import * as Notifications from "expo-notifications";
 
 interface User {
     _id: string,
@@ -68,15 +69,25 @@ const user_chat = () => {
 
     useFocusEffect(useCallback(() => {
         get_chat();
-    }, [chat_id]))
+    }, [chat_id]));
+
+    const getPushToken = async() => {
+        const expoPushToken = await Notifications.getExpoPushTokenAsync();
+        return expoPushToken.data;
+    }
 
     useFocusEffect(
         useCallback(() => {
             const socket_connection = io(API_URL.replace('https', 'ws'));
             setSocket(socket_connection);
-    
-            socket_connection.emit('register', user?.id);
 
+            const registerUser = async() => {
+                const pushtoken = await getPushToken();
+                socket_connection.emit('register', user?.id, pushtoken);
+            }
+
+            registerUser();
+    
             socket_connection.emit('join_chat', chat_id);
     
             socket_connection.on('send_message_response', (response: any) => {

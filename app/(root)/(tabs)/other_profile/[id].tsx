@@ -42,7 +42,6 @@ const other_profile = () => {
         await axios.post(`${API_URL}/user/chat/create`, {
           users: [user?.id, ohterUser?._id]
         }).then((res) => {
-          console.log("new chat id " + res.data.chat._id);
           notifyToast('success', 'Chat criado', 'Chat criado com sucesso');
           router.push(`/user_chat/${res.data.chat._id}`);
         }).catch((err) => {
@@ -51,8 +50,6 @@ const other_profile = () => {
       }
       if(chat.data.code === 'found') {
         // notifyToast('info', 'Chat já existe', 'Chat já existe, redirecionando...');
-        console.log("chat id " + chat.data.chat._id);
-        console.log("EXISTE")
         router.push(`/user_chat/${chat.data.chat._id}`);
       }
     } catch (error: any) {

@@ -7,6 +7,9 @@ import PostCard from '../components/postcard';
 import { FontAwesome } from '@expo/vector-icons';
 import { useSession } from '@/app/context/AuthContext';
 import { API_URL } from '@/app/utils/API_URL';
+import { usePushNotifications } from '@/app/pushNotifications/usePushNotifications';
+import * as SecureStore from 'expo-secure-store';
+import * as Notifications from "expo-notifications";
 
 const home = () => {
 
@@ -40,6 +43,9 @@ const home = () => {
   useFocusEffect(useCallback(() => {
     get_posts();
   }, []));
+
+  usePushNotifications();
+
 
   return (
     <View className='h-full w-full'>

@@ -32,7 +32,6 @@ const chats = () => {
     const { user } = useSession();
     const [ loading, setLoading ] = useState(false);
     const [ searchText, setSearchText ] = useState('');
-    console.log(userChats[0])
 
     const get_user_chats = async() => {
         setLoading(true);
