@@ -1,6 +1,6 @@
 import { View, Text, Pressable, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useSearchParams } from 'expo-router/build/hooks'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'expo-router/build/hooks'
 import { FontAwesome } from '@expo/vector-icons'
 import axios from 'axios'
 import { notifyToast } from '@/app/utils/Toast'
@@ -8,6 +8,7 @@ import { useSession } from '@/app/context/AuthContext'
 import { API_URL } from '@/app/utils/API_URL'
 import Ocurtidas from '../../components/other_user_curtidas'
 import OBlips from '../../components/ohter_user_posts'
+import { useFocusEffect } from 'expo-router'
 
 // TODO - COLOCAR API URL NA ENV PORRA
 interface OtherUser {
@@ -29,6 +30,32 @@ const other_profile = () => {
   const [ selected, setSelected ] = useState<string>('blips');
   const [ followersCount, setFollowersCount ] = useState<number>(ohterUser?.followers.length || 0);
   const { user } = useSession();
+  const router = useRouter();
+
+  const handleChat = async() => {
+    try {
+      const chat = await axios.post(`${API_URL}/user/chat/verify`, {
+        user1: user?.id,
+        user2: ohterUser?._id
+      }, { withCredentials: true });
+      if(chat.data.code === 'not found') {
+        await axios.post(`${API_URL}/user/chat/create`, {
+          users: [user?.id, ohterUser?._id]
+        }).then((res) => {
+          notifyToast('success', 'Chat criado', 'Chat criado com sucesso');
+          router.push(`/user_chat/${res.data.chat._id}`);
+        }).catch((err) => {
+          notifyToast('error', 'Erro ao criar chat', 'Erro ao criar chat, tente novamente.');
+        })
+      }
+      if(chat.data.code === 'found') {
+        // notifyToast('info', 'Chat já existe', 'Chat já existe, redirecionando...');
+        router.push(`/user_chat/${chat.data.chat._id}`);
+      }
+    } catch (error: any) {
+      notifyToast('error', 'Erro ao criar chat', 'Erro ao criar chat, tente novamente.');
+    }    
+  }
 
   const get_user = async() => {
     await axios.get(`${API_URL}/user/${id}`).then((res) => {
@@ -76,10 +103,9 @@ const other_profile = () => {
 
   }
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     get_user();
-  }, []);
-  
+  }, [id]))
 
   return (
     <View className='w-full h-full'>
@@ -97,15 +123,27 @@ const other_profile = () => {
         </View>
       </View>
 
-      <View className='flex flex-row p-4  justify-between gap-5'>
-        <Pressable onPress={handleFollow} className={`bg-steel-gray-700 p-4 rounded-md w-[47%] ${ohterUser?.followers.includes(user?.id) ? 'bg-gray-500' : ''}`}>
-          <Text className='text-white font-bold'>
+      <View className="flex flex-row p-4 justify-between gap-5">
+
+        <Pressable
+          onPress={handleFollow}
+          className={`p-4 rounded-md w-[30%] ${
+            ohterUser?.followers.includes(user?.id) ? 'bg-gray-500' : 'bg-steel-gray-700'
+          }`}
+        >
+          <Text className="text-white font-bold text-center">
             {ohterUser?.followers.includes(user?.id) ? 'Seguindo' : 'Seguir'}
           </Text>
         </Pressable>
-        
-        <Pressable className='bg-steel-gray-700 p-4 rounded-md w-[47%]'>
-          <Text className='text-white font-bold'>Compartilhar perfil</Text>
+
+        <Pressable className="bg-steel-gray-700 p-4 rounded-md w-[30%]">
+          <Text className="text-white font-bold text-center">Compartilhar</Text>
+        </Pressable>
+
+
+        <Pressable onPress={handleChat} className="bg-steel-gray-700 p-4 rounded-md w-[30%] flex flex-row items-center justify-center gap-2">
+          <FontAwesome name="comment"  size={13} color="#fff" />
+          <Text className="text-white font-bold">Chat</Text>
         </Pressable>
       </View>
 

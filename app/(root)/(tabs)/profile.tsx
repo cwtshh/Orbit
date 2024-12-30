@@ -5,10 +5,12 @@ import { FontAwesome } from '@expo/vector-icons';
 import Blips from '../components/blips';
 import Curtidas from '../components/curtidas';
 import Seguindo from '../components/seguindo';
+import { useRouter } from 'expo-router';
 
 const profile = () => {
     const [ selected, setSelected ] = useState<string>('blips');
     const { user } = useSession();
+    const router = useRouter();
 
     return (
         <View className='w-full h-full'>

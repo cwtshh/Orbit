@@ -25,14 +25,14 @@ const index = () => {
         <Text className='font-bold'>Nome de usuário:</Text>
         <TextInput 
           onChangeText={setUsername}
-          className='w-full bg-white rounded-xl' 
+          className='w-full bg-white rounded-xl h-12' 
         />
 
         <Text className='font-bold'>Senha:</Text>
         <TextInput 
           secureTextEntry
           onChangeText={setPassword}
-          className='w-full bg-white rounded-xl' 
+          className='w-full bg-white rounded-xl h-12' 
         />
 
         <Pressable onPress={handleLogin} className='bg-steel-gray-700 p-2 rounded-lg w-full'>

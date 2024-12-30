@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable } from 'react-native'
+import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { notifyToast } from '@/app/utils/Toast';
@@ -7,6 +7,9 @@ import PostCard from '../components/postcard';
 import { FontAwesome } from '@expo/vector-icons';
 import { useSession } from '@/app/context/AuthContext';
 import { API_URL } from '@/app/utils/API_URL';
+import { usePushNotifications } from '@/app/pushNotifications/usePushNotifications';
+import * as SecureStore from 'expo-secure-store';
+import * as Notifications from "expo-notifications";
 
 const home = () => {
 
@@ -25,10 +28,13 @@ const home = () => {
   const { user } = useSession();
   const [posts, setPosts] = useState([]);
   const { logout } = useSession();
+  const [ loading, setLoading ] = useState(false);
 
   const get_posts = async() => {
+    setLoading(true);
     await axios.get(`${API_URL}/user/posts/followers/${user?.id}`, { withCredentials: true }).then((res) => {
       setPosts(res.data);
+      setLoading(false);
     }).catch(() => {
       notifyToast('error', 'Erro ao buscar posts', 'Erro ao buscar posts, tente novamente.');
     })
@@ -37,6 +43,9 @@ const home = () => {
   useFocusEffect(useCallback(() => {
     get_posts();
   }, []));
+
+  usePushNotifications();
+
 
   return (
     <View className='h-full w-full'>
@@ -57,14 +66,20 @@ const home = () => {
         <Text className='font-bold text-2xl'>Blips Recentes</Text>
 
         <ScrollView className='h-[85%]'>
-          {posts.length > 0 ? posts.map((post: Post, index: number) => {
-            return(
-              <View className='mb-4' key={index}>
-                <PostCard key={index} post={post} trigger_reload={() => null} />
-              </View>
+          {loading ? (
+            <View className='flex items-center justify-center w-full h-full'>
+              <ActivityIndicator animating={loading} size='large' color='#725ea4' />
+            </View>
+          ) : (
+            posts.length > 0 ? posts.map((post: Post, index: number) => {
+              return(
+                <View className='mb-4' key={index}>
+                  <PostCard key={index} post={post} trigger_reload={() => null} />
+                </View>
+              )
+            }) : (
+              <Text>Nenhum post encontrado.</Text>
             )
-          }) : (
-            <Text>Nenhum post encontrado.</Text>
           )}
         </ScrollView>
 

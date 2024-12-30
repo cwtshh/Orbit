@@ -5,6 +5,7 @@ import { notifyToast } from '../utils/Toast';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import { API_URL } from '../utils/API_URL';
+import { usePushNotifications } from '../pushNotifications/usePushNotifications';
 
 interface AuthContextType {
     user: User | null;
