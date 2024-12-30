@@ -155,27 +155,29 @@ const post_details = () => {
           ) : (
             <View>
               <Text className="text-lg">{post?.content}</Text>
-              <View
-                className="rounded-xl"
-                style={{
-                  width: "100%",
-                  aspectRatio: 4 / 3, // Garante proporção de 4:3
-                  backgroundColor: "black", // Cor de fundo para as barras
-                  marginTop: 10,
-                }}
-              >
-                <Image
-                  source={{
-                    uri: image_path,
-                  }}
+              {post?.photo && (
+                <View
                   className="rounded-xl"
                   style={{
                     width: "100%",
-                    height: "100%",
-                    resizeMode: "contain", // Mantém a proporção e adiciona barras
+                    aspectRatio: 4 / 3, // Garante proporção de 4:3
+                    backgroundColor: "black", // Cor de fundo para as barras
+                    marginTop: 10,
                   }}
-                />
-              </View>
+                >
+                  <Image
+                    source={{
+                      uri: image_path,
+                    }}
+                    className="rounded-xl"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      resizeMode: "contain", // Mantém a proporção e adiciona barras
+                    }}
+                  />
+                </View>
+              )}
             </View>
           )}
         </View>
