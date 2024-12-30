@@ -66,14 +66,11 @@ const post = () => {
       });
   };
 
-  console.log(user?.id);
-
   const handlePostWithPhoto = async () => {
     if (!content || !imageUri) {
       notifyToast("error", "Erro ao postar", "Preencha todos os campos.");
       return;
     }
-    console.log("handlePostWithPhoto");
     const formData = new FormData();
     if (user?.id) {
       formData.append("user_id", user.id);
@@ -84,8 +81,6 @@ const post = () => {
       type: "image/jpeg",
       name: `photo-${Date.now()}|${user?.id}.jpg`,
     } as any);
-
-    console.log(formData);
 
     await axios
       .post(`${API_URL}/user/post/photo`, formData, {
