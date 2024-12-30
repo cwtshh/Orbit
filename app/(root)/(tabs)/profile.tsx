@@ -44,7 +44,11 @@ const profile = () => {
         {user?.profile_photo_path ? (
           <View className="w-36 h-36 rounded-full overflow-hidden">
             <Image
-              source={{ uri: profileImage }}
+              source={{
+                uri: `${API_URL}/user/photo/${
+                  user?.id
+                }?timestamp=${new Date().getTime()}`,
+              }}
               style={{
                 width: "100%",
                 height: "100%",
