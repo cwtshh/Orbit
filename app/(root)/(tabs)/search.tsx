@@ -6,10 +6,10 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import axios from "axios";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useSession } from "@/app/context/AuthContext";
 import { notifyToast } from "@/app/utils/Toast";
 import { API_URL } from "@/app/utils/API_URL";
@@ -18,9 +18,15 @@ const search = () => {
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<any[]>([]);
   const [debounce, setDebounce] = useState<any>("");
-  const { user } = useSession();
+  const { user, setCurrentScreen } = useSession();
 
   const router = useRouter();
+
+  useFocusEffect(
+    useCallback(() => {
+      setCurrentScreen("Search");
+    }, [])
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -83,20 +89,19 @@ const search = () => {
                     <View className="rounded-full overflow-hidden w-14 h-14">
                       <Image
                         source={{
-                          uri: `${API_URL}/user/photo/${result._id}`,
+                          uri: `${API_URL}/user/photo/${
+                            user?.id
+                          }?timestamp=${new Date().getTime()}`,
                         }}
-                        style={{ width: 50, height: 50, borderRadius: 25 }} // Ajustado para 50px e borderRadius 25
+                        style={{ width: 50, height: 50, borderRadius: 25 }}
                       />
                     </View>
                   ) : (
                     <View className="flex flex-col items-center justify-center w-14 h-14">
                       <FontAwesome name="user-circle" size={44} color="grey" />
-                      {/* Tamanho do ícone reduzido para 30 */}
                     </View>
                   )}
                   <View className="ml-4">
-                    {" "}
-                    {/* Espaço entre imagem/ícone e o texto */}
                     <Text className="font-bold">{result.name}</Text>
                     <Text className="text-gray-500">@{result.username}</Text>
                   </View>

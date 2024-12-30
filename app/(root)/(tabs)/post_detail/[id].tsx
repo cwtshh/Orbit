@@ -29,6 +29,7 @@ interface Post {
     password: string;
     createdAt: string;
     updatedAt: string;
+    profile_photo_path: string;
     __v: number;
   };
   photo: string;
@@ -49,7 +50,7 @@ interface Comment {
 }
 
 const post_details = () => {
-  const { user } = useSession();
+  const { user, setCurrentScreen } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
@@ -102,6 +103,7 @@ const post_details = () => {
 
   useFocusEffect(
     useCallback(() => {
+      setCurrentScreen("PostDetails");
       get_post();
     }, [id])
   );
@@ -128,9 +130,21 @@ const post_details = () => {
 
       <ScrollView>
         <View className="flex flex-row gap-4 items-start p-4">
-          <View className="bg-steel-gray-800 p-4 flex flex-row justify-between items-center rounded-full">
-            <FontAwesome name="user" size={24} color="white" />
-          </View>
+          {post?.user.profile_photo_path ? (
+            <View className="w-14 h-14 rounded-full overflow-hidden">
+              <Image
+                source={{
+                  uri: `${API_URL}/user/photo/${post?.user._id}`,
+                }}
+                className="rounded-full"
+                style={{ width: 56, height: 56, borderRadius: 28 }}
+              />
+            </View>
+          ) : (
+            <View className="bg-steel-gray-800 p-4 flex flex-row justify-between items-center rounded-full">
+              <FontAwesome name="user" size={24} color="white" />
+            </View>
+          )}
           {loading ? (
             <ActivityIndicator animating={loading} size="small" color="black" />
           ) : (

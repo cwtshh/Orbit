@@ -27,7 +27,9 @@ const FollowingCard = ({ user }: FollowingCardProps) => {
           <View className="w-10 h-10 rounded-full overflow-hidden">
             <Image
               source={{
-                uri: `${API_URL}/user/photo/${user._id}`,
+                uri: `${API_URL}/user/photo/${
+                  user._id
+                }?timestamp=${new Date().getTime()}`,
               }}
               style={{ width: 40, height: 40, borderRadius: 20 }} // A imagem vai ter 40px de largura e altura
             />

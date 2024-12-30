@@ -103,7 +103,11 @@ const edit_profile = () => {
           ) : (
             <View className="flex flex-row items-center justify-center bg-white rounded-full w-36 h-36 p-2">
               <Image
-                source={{ uri: `${API_URL}/user/photo/${user?.id}` }}
+                source={{
+                  uri: `${API_URL}/user/photo/${
+                    user?.id
+                  }?timestamp=${new Date().getTime()}`,
+                }}
                 style={{ width: 140, height: 140, borderRadius: 70 }}
               />
             </View>

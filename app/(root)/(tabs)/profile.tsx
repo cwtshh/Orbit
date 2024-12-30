@@ -11,11 +11,21 @@ import { API_URL } from "@/app/utils/API_URL";
 
 const profile = () => {
   const [selected, setSelected] = useState<string>("blips");
-  const { user } = useSession();
+  const { user, setCurrentScreen } = useSession();
   const router = useRouter();
+  const [profileImage, setProfileImage] = useState<string>("");
+
+  console.log(user);
 
   useFocusEffect(
     useCallback(() => {
+      if (user?.profile_photo_path) {
+        setProfileImage(
+          `${API_URL}/user/photo/${user?.id}?timestamp=${new Date().getTime()}`
+        );
+        console.log(profileImage);
+      }
+      setCurrentScreen("Profile");
       return () => setSelected("blips");
     }, [])
   );
@@ -34,12 +44,12 @@ const profile = () => {
         {user?.profile_photo_path ? (
           <View className="w-36 h-36 rounded-full overflow-hidden">
             <Image
-              source={{ uri: `${API_URL}/user/photo/${user?.id}` }}
+              source={{ uri: profileImage }}
               style={{
-                width: "100%", // Faz com que a imagem ocupe 100% da largura do contêiner
-                height: "100%", // Faz com que a imagem ocupe 100% da altura do contêiner
-                borderRadius: 70, // Mantém o arredondamento de 50% do contêiner
-                resizeMode: "cover", // Faz a imagem ser redimensionada de forma que a área central seja mantida
+                width: "100%",
+                height: "100%",
+                borderRadius: 70,
+                resizeMode: "cover",
               }}
             />
           </View>

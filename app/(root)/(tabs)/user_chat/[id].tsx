@@ -47,7 +47,7 @@ const user_chat = () => {
     messages: [],
     createdAt: new Date(),
   });
-  const { user } = useSession();
+  const { user, setCurrentScreen } = useSession();
   const router = useRouter();
   const other_user = chat.users.filter((u) => u._id !== user?.id)[0] || {
     _id: "",
@@ -68,6 +68,13 @@ const user_chat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [chat.messages]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setCurrentScreen("Chat");
+      console.log("Tela atual no useFocusEffect:", "Chat");
+    }, [])
+  );
 
   const get_chat = async () => {
     setLoading(true);

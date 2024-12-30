@@ -40,7 +40,7 @@ const other_profile = () => {
     ohterUser?.followers.length || 0
   );
   const [loading, setLoading] = useState<boolean>(false);
-  const { user } = useSession();
+  const { user, setCurrentScreen } = useSession();
   const router = useRouter();
 
   const handleChat = async () => {
@@ -178,7 +178,7 @@ const other_profile = () => {
   useFocusEffect(
     useCallback(() => {
       get_user();
-
+      setCurrentScreen("OtherProfile");
       return () => {
         setSelected("blips");
       };

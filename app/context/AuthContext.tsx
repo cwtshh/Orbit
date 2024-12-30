@@ -20,6 +20,8 @@ interface AuthContextType {
   register: (user_data: RegisterBody) => void;
   isLoading: boolean;
   edit_profile: (formData: FormData) => void;
+  curentScreen: string;
+  setCurrentScreen: (screen: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -29,6 +31,8 @@ const AuthContext = createContext<AuthContextType>({
   edit_profile: () => {},
   user: null,
   isLoading: false,
+  curentScreen: "",
+  setCurrentScreen: () => {},
 });
 
 export const useSession = () => {
@@ -40,6 +44,7 @@ export const SessionProvider = ({ children }: PropsWithChildren<{}>) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
+  const [curentScreen, setCurrentScreen] = useState<string>("");
 
   const router = useRouter();
 
@@ -111,6 +116,7 @@ export const SessionProvider = ({ children }: PropsWithChildren<{}>) => {
         withCredentials: true,
       })
       .then((res) => {
+        console.log(res.data);
         setUser(res.data.user);
         SecureStore.setItemAsync("user_data", JSON.stringify(res.data.user));
         notifyToast(
@@ -153,6 +159,8 @@ export const SessionProvider = ({ children }: PropsWithChildren<{}>) => {
         register,
         edit_profile,
         isLoading,
+        curentScreen,
+        setCurrentScreen,
       }}
     >
       {children}

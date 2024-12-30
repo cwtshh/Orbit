@@ -51,7 +51,7 @@ const PostCard = ({ post, trigger_reload }: PostCardProps) => {
       });
   };
 
-  const image_path = `${API_URL}/user/photo/${user?.id}/${post?._id}`;
+  const image_path = `${API_URL}/user/photo/${user?.id}/${post?._id}/`;
 
   return (
     <Pressable onPress={() => router.push(`/post_detail/${post._id}`)}>
@@ -64,7 +64,9 @@ const PostCard = ({ post, trigger_reload }: PostCardProps) => {
             <View className="bg-steel-gray-800 p-2 rounded-full w-10 h-10 flex items-center justify-center">
               <Image
                 source={{
-                  uri: `${API_URL}/user/photo/${post.user._id}`,
+                  uri: `${API_URL}/user/photo/${
+                    post.user._id
+                  }?timestamp=${new Date().getTime()}`,
                 }}
                 style={{ width: 36, height: 36, borderRadius: 18 }}
               />

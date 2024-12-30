@@ -22,16 +22,16 @@ const home = () => {
     _id: number;
     content: string;
     user: {
-      id: number;
+      _id: number;
       username: string;
-      photo: string;
+      profile_photo_path?: string;
     };
     likes: number;
     comments_count: number;
     createdAt: string;
   }
 
-  const { user } = useSession();
+  const { user, setCurrentScreen } = useSession();
   const [posts, setPosts] = useState([]);
   const { logout } = useSession();
   const [loading, setLoading] = useState(false);
@@ -58,6 +58,7 @@ const home = () => {
   useFocusEffect(
     useCallback(() => {
       get_posts();
+      setCurrentScreen("Home");
     }, [])
   );
 

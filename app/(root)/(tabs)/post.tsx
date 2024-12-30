@@ -9,7 +9,7 @@ import { API_URL } from "@/app/utils/API_URL";
 import * as ImagePicker from "expo-image-picker";
 
 const post = () => {
-  const { user } = useSession();
+  const { user, setCurrentScreen } = useSession();
   const date = new Date();
   const router = useRouter();
   const [content, setContent] = useState<string>("");
@@ -103,6 +103,12 @@ const post = () => {
         );
       });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      setCurrentScreen("Post");
+    }, [])
+  );
 
   // useFocusEffect(
   //   useCallback(() => {
