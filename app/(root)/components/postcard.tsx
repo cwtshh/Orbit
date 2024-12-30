@@ -11,13 +11,14 @@ interface Post {
   _id: number;
   content: string;
   user: {
-    id: number;
+    _id: number;
     username: string;
+    profile_photo_path?: string;
   };
   likes: number;
   comments_count: number;
   createdAt: string;
-  photo: string;
+  photo?: string;
 }
 
 interface PostCardProps {
@@ -56,9 +57,23 @@ const PostCard = ({ post, trigger_reload }: PostCardProps) => {
     <Pressable onPress={() => router.push(`/post_detail/${post._id}`)}>
       <View className="border p-4 rounded-xl border-gray-50 bg-steel-gray-100">
         <View className="flex flex-row gap-4 items-start">
-          <View className="bg-steel-gray-800 p-2 rounded-full w-10 h-10 flex items-center justify-center">
+          {/* <View className="bg-steel-gray-800 p-2 rounded-full w-10 h-10 flex items-center justify-center">
             <FontAwesome name="user" size={24} color="white" />
-          </View>
+          </View> */}
+          {post.user.profile_photo_path ? (
+            <View className="bg-steel-gray-800 p-2 rounded-full w-10 h-10 flex items-center justify-center">
+              <Image
+                source={{
+                  uri: `${API_URL}/user/photo/${post.user._id}`,
+                }}
+                style={{ width: 36, height: 36, borderRadius: 18 }}
+              />
+            </View>
+          ) : (
+            <View className="bg-steel-gray-800 p-2 rounded-full w-10 h-10 flex items-center justify-center">
+              <FontAwesome name="user" size={24} color="white" />
+            </View>
+          )}
           <View>
             <View className="flex flex-row items-center gap-2">
               <Text className="font-bold text-xl">{post.user.username}</Text>
