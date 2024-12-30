@@ -1,11 +1,11 @@
-import { View, Text, ScrollView } from 'react-native';
-import React, { useCallback, useState } from 'react';
-import { useSession } from '@/app/context/AuthContext';
-import axios from 'axios';
-import { notifyToast } from '@/app/utils/Toast';
-import PostCard from './postcard';
-import { useFocusEffect } from 'expo-router';
-import { API_URL } from '@/app/utils/API_URL';
+import { View, Text, ScrollView } from "react-native";
+import React, { useCallback, useState } from "react";
+import { useSession } from "@/app/context/AuthContext";
+import axios from "axios";
+import { notifyToast } from "@/app/utils/Toast";
+import PostCard from "./postcard";
+import { useFocusEffect } from "expo-router";
+import { API_URL } from "@/app/utils/API_URL";
 
 const Blips = () => {
   const { user } = useSession();
@@ -18,7 +18,11 @@ const Blips = () => {
       const res = await axios.get(`${API_URL}/user/posts/user/${user?.id}`);
       setPosts(res.data);
     } catch (err) {
-      notifyToast('error', 'Error', 'An error occurred while trying to fetch posts');
+      notifyToast(
+        "error",
+        "Error",
+        "An error occurred while trying to fetch posts"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +36,7 @@ const Blips = () => {
   );
 
   return (
-    <View className='p-4'>
+    <View className="p-4">
       {isLoading ? (
         <View className="items-center justify-center">
           <Text className="text-white">Carregando...</Text>
